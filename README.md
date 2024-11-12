@@ -2,7 +2,7 @@
 
 ## Summary
 
-I am interested in learning <a href="https://julialang.org/" target="_blank">the Julia programming language</a> for machining learning, with a focus on doing image processing and deep learning for computer vision.
+I am interested in learning <a href="https://julialang.org/" target="_blank">the Julia programming language</a> for machine learning, with a focus on doing image processing and deep learning for computer vision.
 
 I am a seasoned programmer, having worked with many languages, frameworks, and tools for the last 20 years. As a newcomer to any language, I ask some of the same question that are covered in every "Intro to X Language" books and online tutorials. Questions like:
 
