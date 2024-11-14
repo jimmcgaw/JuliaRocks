@@ -116,6 +116,90 @@ To transition from the `Julia REPL` into `Shell mode`, just enter a semi-colon: 
 
 This allows for entering typical shell commands, as if you weren't in the Julia prompt.
 
+## Installing Packages
+
+You can try these out, but if you're starting a project, and want to maintain a set of dependency packages for that project, I'd suggest you keep reading before you start installing a bunch of things.
+
+There are a few ways to install packages. In these cases, we're installing the `Revise` package.
+
+1. In the `Pkg REPL`:
+
+```
+add Revise
+```
+
+2. In the `Julia REPL`:
+
+```
+using Pkg
+Pkg.add("Revise")
+```
+
+Or, if you don't want to do the import of the `Pkg` module, just try importing the module you want to install
+
+```
+using Revise
+```
+
+and follow the prompts that offer to install the missing package for you.
+
+## Removing Packages
+
+In the `Julia REPL`:
+
+```
+using Pkg
+Pkg.rm("Revise")
+```
+
 ## Installing Global Packages
 
-You can install dependencies in your system globally, for use by all projects on your machine, by going into the 
+You can install dependencies in your system globally, for use by all projects on your machine, by going into the `Julia REPL` without specifying a project:
+
+```
+julia
+```
+
+## Setting up a Julia Project
+
+There is a command for generating an initial project structure, which is basically a directory for source code, which is initialized with a "Hello World" example, and a `Project.toml` file to house project metadata, and to track dependencies.
+
+Go into the directory on your machine where you store code project directories. (For me, this is `~/source/`.)
+
+In this directory, enter the the `Pkg REPL`, and then run this to generate the project:
+
+```
+generate YourProjectName
+```
+
+(Replace `YourProjectName` with your desired project name. By convention, in Julia module and package names using `CapitalCamelCase`. See <a href="https://docs.julialang.org/en/v1/manual/style-guide/#Use-naming-conventions-consistent-with-Julia-base/" target="_blank">the Julia Style Guide</a>) for more on naming conventions.)
+
+Back in your shell, can `cd` into this new project directory and run `tree` to see the initial files. (Assumes you have the `tree` system package installed.)
+
+You can enter the `Julia REPL` and `Pkg REPL` scoped to your new project by running the following from inside of your new project directory:
+
+```
+julia --project=.
+```
+
+This command is common enough that I usually put it into a Makefile, or create an alias, so I can run it quickly.
+
+Now, if you install packages, they will be included as part of your project, and listed in the `Project.toml` file. This is useful when you want to deploy your code, and you want to install all of your project dependencies from a single source of truth.
+
+## Install Project Dependencies
+
+Inside of your project's `Julia REPL`, ie after running:
+
+```
+julia --project=.
+```
+
+You can install dependencies the same way as specified above, in the "Installing Packages" section. Try installing this into your project (just hit "y" when prompted):
+
+```
+using JSON3
+```
+
+After installation, you can open up `Project.toml` and see that this new package is listed in the `deps` section. This makes installation of any and all packages you add to your project easily reproducible. (See the "Dockerize It" section below to see why this is helpful.)
+
+
