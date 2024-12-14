@@ -194,7 +194,7 @@ Inside of your project's `Julia REPL`, ie after running:
 julia --project=.
 ```
 
-You can install dependencies the same way as specified above, in the "Installing Packages" section. Try installing this into your project (just hit "y" when prompted):
+you can install dependencies the same way as specified above, in the "Installing Packages" section. Try installing this into your project (just hit "y" when prompted):
 
 ```
 using JSON3
@@ -202,4 +202,40 @@ using JSON3
 
 After installation, you can open up `Project.toml` and see that this new package is listed in the `deps` section. This makes installation of any and all packages you add to your project easily reproducible. (See the "Dockerize It" section below to see why this is helpful.)
 
+## Dockerize It
 
+Containers are an old construct in the Linux world. Conceptually, a container is an isolated running process that has selective access to the hardware and software on which the container is running.
+
+Docker is a tool that provides the means to create images. A container is a running instance of an image. An image is a blueprint for a container; once you have built an image, you can instantiate containers based on that image. You can do several on your own computer, or you can deploy the image to be run as a container in the cloud. This is the advantage of images: you can build an image that contains your code that can be easily propagated. If it runs on your laptop, it will run just the same in the cloud, for example, on an AWS server.
+
+To dockerize our project, we first need to create an image. When creating images, we don't have to start from scratch; there are several hubs of pre-built images online, the most popular of which is Docker Hub. Here is the official Julia base image collection on Docker hub: [https://hub.docker.com/_/julia](https://hub.docker.com/_/julia).
+
+To see how this works, take a look at the Dockerfile at the root of this project. The first line, `FROM`, specifies the base image we want to use, as well as the version. This means we start with an image that has the Julia language already installed for us. 
+
+Additional lines in the Dockerfile are added on to our base image. We create a working directory inside of the image to hold our source code, then copy over the source and our dependency `Project.toml` file into the image. We then run a command to install our dependencies.
+
+The last line of the Dockerfile is the command that will be run when we spawn a container from the image. For example, if we were building a Julia web server project, this command would be to start the web server.
+
+You can build a docker container using `docker build` and the correct arguments, but I prefer to use the declarative convenience of the `docker-compose.yml` file. 
+
+To build the image from this:
+
+```
+docker compose build
+```
+
+This will pull the base image from Docker Hub, and then run the rest of the commands to add layers to the image we're buliding. Once built, a container can be spawned as a background process via:
+
+```
+docker compose up -d
+```
+
+And to stop:
+
+```
+docker compose down
+```
+
+The more common commands are listed in the `Makefile`.
+
+To deploy a project via an image, you typically push your own custom built image to a image registry (like Docker Hub) somewhere online. In a cloud provider like AWS or GCP, you can reference the image in this registry to be pulled and run in the cloud.
